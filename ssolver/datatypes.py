@@ -29,21 +29,29 @@ class Field(object):
     This is the type for modeling sudoku game field.
     The field is represented as 1D array of cells
     '''
-    
+    ROWS_MAX = 9
+    COLS_MAX = 9
 
-    def __init__(self):
-        self.cells = []
+    def __init__(self, cells=[]):
+        self.cells = cells
         self.rows = 0
-        self.cols = 0
 
     @classmethod
     def make_empty(cls):
         return cls()
 
-    def add_row(self, row):
-        #TODO: check the length of row. Raise exception if something's bad
-        self.cells.extend(Cell(c) for c in row)
+    def _check(self, row):
+        if len(row) != self.COLS_MAX:
+            raise IncorrectInputFormat('Expected %s columns; found %s' % (self.COLS_MAX, len(row)))
 
+    def add_row(self, row):
+        self._check(row)
+        
+        self.cells.extend(Cell(c) for c in row)
+        self.rows += 1
+    
+    def ready(self):
+        return self.rows == self.ROWS_MAX
 
 class Cell(object):
     '''
@@ -73,7 +81,8 @@ class Cell(object):
         else:
             raise UnknownSymbolError('Unexpected symbol: %s' % val)
 
-
+    def __repr__(self):
+        return 'Cell(%s)' % self.value
         
 ###################
 # EXCEPTIONS
