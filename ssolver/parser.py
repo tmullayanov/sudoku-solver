@@ -18,7 +18,7 @@ def parse_field(lines):
         if field.ready():
             break
     if field.ready():
-        return Field
+        return field
     else:
         raise ValueError('Field is not ready!')
 
