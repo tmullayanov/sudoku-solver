@@ -1,9 +1,13 @@
 '''
 datatypes.py - module defining field representation
 
-exported class:
+exported classes:
     Field
     Cell
+
+exported exceptions:
+    UnknownSymbolError
+    IncorrectInputError
 '''
 import copy as cp
 
@@ -25,15 +29,19 @@ class Field(object):
     This is the type for modeling sudoku game field.
     The field is represented as 1D array of cells
     '''
+    
 
     def __init__(self):
         self.cells = []
+        self.rows = 0
+        self.cols = 0
 
     @classmethod
     def make_empty(cls):
         return cls()
 
     def add_row(self, row):
+        #TODO: check the length of row. Raise exception if something's bad
         self.cells.extend(Cell(c) for c in row)
 
 
@@ -64,6 +72,7 @@ class Cell(object):
             self.options = cp.copy(self.DEFAULT_OPTIONS)
         else:
             raise UnknownSymbolError('Unexpected symbol: %s' % val)
+
 
         
 ###################
