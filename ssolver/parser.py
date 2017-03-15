@@ -3,6 +3,7 @@ parser.py - module implementing parsing sudoku from input stream.
 
 Exported functions:
     parse
+    parse_field
 '''
 from ssolver.datatypes import Field, IncorrectInputError, UnknownSymbolError
 
@@ -17,6 +18,7 @@ def parse_field(lines):
         
         if field.ready():
             break
+    
     if field.ready():
         return field
     else:
