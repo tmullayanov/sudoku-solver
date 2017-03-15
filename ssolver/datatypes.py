@@ -43,6 +43,11 @@ class Field(object):
     def _check(self, row):
         if len(row) != self.COLS_MAX:
             raise IncorrectInputFormat('Expected %s columns; found %s' % (self.COLS_MAX, len(row)))
+    
+    @classmethod
+    def copy(cls, field):
+        assert cls is type(field), "Type mismatch: %s expected; %s found" % (cls, type(field))
+        return cp.deepcopy(field)    
 
     def add_row(self, row):
         self._check(row)
@@ -83,9 +88,21 @@ class Cell(object):
 
     def __repr__(self):
         return 'Cell(%s)' % self.value
+
+    def __innerEq__(self, cell):
+        '''
+        Supplementary method used in __eq__.
+        Compares value and options.
+        '''
+        return self.value == cell.value and self.options == cell.options
+
+    def __eq__(self, cell):
+        type_eq = type(self) is type(cell)
+        return type_eq and self.__innerEq__(cell)
+
         
 ###################
-# EXCEPTIONS
+# EXCEPTIONS/ERRORS
 ###################
 
 class UnknownSymbolError(ValueError): pass 
