@@ -42,7 +42,7 @@ class Field(object):
 
     def _check(self, row):
         if len(row) != self.COLS_MAX:
-            raise IncorrectInputFormat('Expected %s columns; found %s' % (self.COLS_MAX, len(row)))
+            raise IncorrectInputError('Expected %s columns; found %s' % (self.COLS_MAX, len(row)))
     
     @classmethod
     def copy(cls, field):

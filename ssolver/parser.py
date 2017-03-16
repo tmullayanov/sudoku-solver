@@ -11,7 +11,7 @@ def _enough(iterable, n=9):
     return len(iterable) == n
 
 def parse_field(lines):
-    field = Field.make_empty() # TODO: make this a @classmethod
+    field = Field.make_empty() 
     for line in lines:
         clean_line = wipe_separators(line)
         field.add_row(clean_line)
@@ -30,7 +30,6 @@ def wipe_separators(line):
     return line.translate(replacement_table)
 
 def parse(fname):
-    print('0')
     with open(fname, 'r') as inp:
         lines = list(filter(None, inp.readlines()))
         return parse_field(lines) 

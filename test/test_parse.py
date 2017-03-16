@@ -7,7 +7,6 @@ parser = ssolver.parser
 
 class BadInput(unittest.TestCase):
     
-    @unittest.expectedFailure
     def testShortLine(self):
         with self.assertRaises(ssolver.IncorrectInputError) as cm:
             parser.parse('input/incorrect1.sudoku')
