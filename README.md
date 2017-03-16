@@ -4,6 +4,11 @@ This module provides functionality needed for solving simple sudoku 9x9 with 3x3
 
 Currently there is no support for sudoku with any other field size (since there is no way to represent custom subfields)
 
+# Tests:
+
+    To run manually do the following:
+    shell> python -m unittest -v
+
 # Input format
 
 This section describes sudoku input format as follows:
