@@ -11,11 +11,13 @@ exported exceptions:
 '''
 import copy as cp
 
+
 class SilentSet(set):
     '''
     The purpose of this type is to provide a way of silent removal of elements.
     This is accomplished with overriding set.remove method
-    '''    
+    '''
+
     def remove(self, value):
         '''
         remove an element if it exists. Stays quiet otherwise
@@ -42,21 +44,32 @@ class Field(object):
 
     def _check(self, row):
         if len(row) != self.COLS_MAX:
-            raise IncorrectInputError('Expected %s columns; found %s' % (self.COLS_MAX, len(row)))
-    
+            raise IncorrectInputError(
+                'Expected %s columns; found %s' % (self.COLS_MAX, len(row)))
+
     @classmethod
     def copy(cls, field):
-        assert cls is type(field), "Type mismatch: %s expected; %s found" % (cls, type(field))
-        return cp.deepcopy(field)    
+        assert cls is type(field), "Type mismatch: %s expected; %s found" % (
+            cls, type(field))
+        return cp.deepcopy(field)
 
     def add_row(self, row):
+        '''Fills next row, checks if enough symbols are provided'''
         self._check(row)
-        
+
         self.cells.extend(Cell(c) for c in row)
         self.rows += 1
-    
+
     def ready(self):
+        '''True if ROWS_MAX rows were loaded'''
         return self.rows == self.ROWS_MAX
+
+    def get_at(self, row, col):
+        '''Returns cell at specified position'''
+        assert 0 <= row < self.ROWS_MAX, "row out of bound"
+        assert 0 <= col < self.COLS_MAX, "col out of bound"
+        return self.cells[row * self.ROWS_MAX + col]
+
 
 class Cell(object):
     '''
@@ -100,10 +113,24 @@ class Cell(object):
         type_eq = type(self) is type(cell)
         return type_eq and self.__innerEq__(cell)
 
-        
+    def set(self, val):
+        assert val in self.options, "Value is not an option!"
+        self.value = val
+        self.options = SilentSet()
+
+    def remove(self, *values):
+        '''Removes one or more elements from possible options'''
+        for val in values:
+            self.options.remove(val)
+
+
 ###################
 # EXCEPTIONS/ERRORS
 ###################
 
-class UnknownSymbolError(ValueError): pass 
-class IncorrectInputError(ValueError): pass
+class UnknownSymbolError(ValueError):
+    pass
+
+
+class IncorrectInputError(ValueError):
+    pass
