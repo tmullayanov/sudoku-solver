@@ -1,4 +1,4 @@
 import ssolver.datatypes as datatypes
-import ssolver.parser as parser
+import ssolver.loader as loader
 
 from .datatypes import IncorrectInputError, UnknownSymbolError
