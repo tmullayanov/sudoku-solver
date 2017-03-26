@@ -34,13 +34,13 @@ class Field(object):
     ROWS_MAX = 9
     COLS_MAX = 9
 
-    def __init__(self, cells=[]):
+    def __init__(self, cells):
         self.cells = cells
         self.rows = 0
 
     @classmethod
     def make_empty(cls):
-        return cls()
+        return cls(cells=[])
 
     def _check(self, row):
         if len(row) != self.COLS_MAX:

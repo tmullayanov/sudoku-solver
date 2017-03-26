@@ -10,7 +10,6 @@ Note that "load_field" is used as wrapper for parse_field.
 '''
 from ssolver.datatypes import Field, IncorrectInputError, UnknownSymbolError
 
-
 def _enough(iterable, n=9):
     return len(iterable) == n
 
@@ -19,7 +18,11 @@ def parse_field(lines):
     field = Field.make_empty()
     for line in lines:
         clean_line = wipe_separators(line)
-        field.add_row(clean_line)
+        
+        if clean_line:
+            field.add_row(clean_line)
+        else:
+            continue
 
         if field.ready():
             break
