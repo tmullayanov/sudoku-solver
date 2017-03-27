@@ -14,9 +14,9 @@ class BadInput(unittest.TestCase):
     def testLoadSimple(self):
         f = loader.load_field('input/simple.sudoku')
         self.assertEqual(f.rows, ssolver.datatypes.Field.ROWS_MAX)
-        self.assertEqual(f.get_at(0, 1), ssolver.datatypes.Cell('3'))
+        self.assertEqual(f.value_at(0, 1), 3)
 
     def testLoadSpaces(self):
         f = loader.load_field('input/spaces.sudoku')
         self.assertEqual(f.rows, ssolver.datatypes.Field.ROWS_MAX)
-        self.assertEqual(f.get_at(0, 0), ssolver.datatypes.Cell('8'))
+        self.assertEqual(f.value_at(0, 0), 8)

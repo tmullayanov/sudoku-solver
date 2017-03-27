@@ -57,18 +57,22 @@ class Field(object):
         '''Fills next row, checks if enough symbols are provided'''
         self._check(row)
 
-        self.cells.extend(Cell(c) for c in row)
+        self.cells.extend(Cell(c, self.rows, j) for (j, c) in enumerate(row))
         self.rows += 1
 
     def ready(self):
         '''True if ROWS_MAX rows were loaded'''
         return self.rows == self.ROWS_MAX
 
-    def get_at(self, row, col):
+    def cell_at(self, row, col):
         '''Returns cell at specified position'''
         assert 0 <= row < self.ROWS_MAX, "row out of bound"
         assert 0 <= col < self.COLS_MAX, "col out of bound"
         return self.cells[row * self.ROWS_MAX + col]
+
+    def value_at(self, row, col):
+        cell = self.cell_at(row, col)
+        return cell.value
 
 
 class Cell(object):
@@ -81,7 +85,7 @@ class Cell(object):
     EVEN = SilentSet(range(2, 10, 2))
     ODD = SilentSet(range(1, 10, 2))
 
-    def __init__(self, val):
+    def __init__(self, val, row, col):
 
         if val.isnumeric():
             self.value = int(val)
@@ -98,9 +102,15 @@ class Cell(object):
             self.options = cp.copy(self.DEFAULT_OPTIONS)
         else:
             raise UnknownSymbolError('Unexpected symbol: %s' % val)
+        
+        self.row = row
+        self.col = col
 
     def __repr__(self):
-        return 'Cell(%s)' % self.value
+        return 'Cell(%s, row=%s, col=%s)' % (self.value, self.row, self.col)
+
+    def __str__(self):
+        return repr(self)
 
     def __innerEq__(self, cell):
         '''
