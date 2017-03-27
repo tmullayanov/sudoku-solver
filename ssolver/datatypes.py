@@ -73,7 +73,37 @@ class Field(object):
     def value_at(self, row, col):
         cell = self.cell_at(row, col)
         return cell.value
+    
+    #TODO:
+    #def pprint(self): pretty print cells(or cells.val) as "square"
 
+    def _get_subset(self, rule):
+        '''
+        Tricky. This method returns list of cells matching
+        2-argument predicate RULE.
+        Arguments of RULE: row and column where cells is located at.
+        
+        This method is supplementary for specific methods which select
+        horizontal/vertical line and subsquares.
+        '''
+        f = lambda cell: rule(cell.row, cell.col)
+        return list(filter(f, self.cells))
+
+    def horizonal_line(self, line):
+        assert 0 <= line < self.ROWS_MAX, "line out of bound"
+        rule = lambda x, _: x == line
+        return self._get_subset(rule)
+    
+    def vertical_line(self, column):
+        assert 0 <= column < self.COLS_MAX, "column out of bound"
+        rule = lambda _, y: y == column
+        return self._get_subset(rule)
+    #TODO:
+    #add methods for getting vert/horiz line for cell/position
+    #add method for getting subsquare. Method should be based on
+    #inequities (like lambda x, y: 0 <= x < 3 and 0 <= y < 3 for 1st subsquare)
+    #keep in mind that methods would be used by analyzer mostly
+    #so maybe it would be better to design all methods in terms of cells instead of positions
 
 class Cell(object):
     '''
