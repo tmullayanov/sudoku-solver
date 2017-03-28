@@ -89,21 +89,50 @@ class Field(object):
         f = lambda cell: rule(cell.row, cell.col)
         return list(filter(f, self.cells))
 
-    def horizonal_line(self, line):
+    def horizonal_line(self, cell=None, line=0):
+        if cell:
+            line = cell.row
         assert 0 <= line < self.ROWS_MAX, "line out of bound"
         rule = lambda x, _: x == line
         return self._get_subset(rule)
     
-    def vertical_line(self, column):
+    def vertical_line(self, cell=None, column=0):
+        if cell:
+            column = cell.col
         assert 0 <= column < self.COLS_MAX, "column out of bound"
         rule = lambda _, y: y == column
         return self._get_subset(rule)
-    #TODO:
-    #add methods for getting vert/horiz line for cell/position
-    #add method for getting subsquare. Method should be based on
-    #inequities (like lambda x, y: 0 <= x < 3 and 0 <= y < 3 for 1st subsquare)
-    #keep in mind that methods would be used by analyzer mostly
-    #so maybe it would be better to design all methods in terms of cells instead of positions
+
+    def subsquare_for(self, cell=None, row=0, col=0):
+        '''
+        Returns list of cells located in the same subsquare that is specified either by CELL or by ROW and COL explicilty.
+        CELL specification has higher priority
+        '''
+        if cell:
+            row, col = cell.row, cell.col
+        # calculating subsquare borders:
+        # row_left, row_right, column_bottom, column_top
+
+        row_l, col_t = row // 3, col // 3
+        row_r, col_b = row_l + 3, col_t + 3
+        # use those borders to construct rule
+        rule = lambda x, y: row_l <= x < row_r and col_t <= y < col_b
+        return self._get_subset(rule)
+
+    def subsquare_by_num(self, num):
+        '''
+        The following enumeration is implied:
+        0|1|2
+        -+-+-
+        3|4|5
+        -+-+-
+        6|7|8
+        '''
+        row_l, col_t = 3 * (num // 3), 3 * (num % 3)
+        row_r, col_b = row_l + 3, col_t + 3
+        rule = lambda x, y: row_l <= x < row_r and col_t <= y < col_b
+        return self._get_subset(rule)
+
 
 class Cell(object):
     '''
