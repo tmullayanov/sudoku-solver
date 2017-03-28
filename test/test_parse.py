@@ -11,6 +11,9 @@ class BadInput(unittest.TestCase):
         with self.assertRaises(ssolver.IncorrectInputError) as cm:
             loader.load_field('input/incorrect1.sudoku')
 
+
+class OKInput(unittest.TestCase):
+
     def testLoadSimple(self):
         f = loader.load_field('input/simple.sudoku')
         self.assertEqual(f.rows, ssolver.datatypes.Field.ROWS_MAX)
