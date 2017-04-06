@@ -89,7 +89,7 @@ class Field(object):
         f = lambda cell: rule(cell.row, cell.col)
         return list(filter(f, self.cells))
 
-    def horizonal_line(self, cell=None, line=0):
+    def horizontal_line(self, cell=None, line=0):
         if cell:
             line = cell.row
         assert 0 <= line < self.ROWS_MAX, "line out of bound"
@@ -113,7 +113,7 @@ class Field(object):
         # calculating subsquare borders:
         # row_left, row_right, column_bottom, column_top
 
-        row_l, col_t = row // 3, col // 3
+        row_l, col_t = row // 3 * 3, col // 3 * 3
         row_r, col_b = row_l + 3, col_t + 3
         # use those borders to construct rule
         rule = lambda x, y: row_l <= x < row_r and col_t <= y < col_b
@@ -132,6 +132,26 @@ class Field(object):
         row_r, col_b = row_l + 3, col_t + 3
         rule = lambda x, y: row_l <= x < row_r and col_t <= y < col_b
         return self._get_subset(rule)
+
+    def get_all_subsets(self):
+        '''
+        Returns generator that yields all subsets in the following order:
+          - horizontal lines
+          - vertical lines
+          - subsquares
+        '''
+        for i in range(0, self.ROWS_MAX):
+            yield self.horizontal_line(line=i)
+        for i in range(0, self.COLS_MAX):
+            yield self.vertical_line(column=i)
+        for i in range(0, self.COLS_MAX):
+            yield self.subsquare_by_num(num=i)
+
+    def list_all_peers(self, cell):
+        _all = self.horizontal_line(cell=cell) + \
+                self.vertical_line(cell=cell) + \
+                self.subsquare_for(cell=cell)
+        return [x for x in _all if x is not cell]
 
 
 class Cell(object):
