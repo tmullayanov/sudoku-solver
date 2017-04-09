@@ -10,7 +10,14 @@ exported exceptions:
     IncorrectInputError
 '''
 import copy as cp
+import sys
+import itertools
 
+
+def grouper(iterable, by=3, fillvalue=None):
+    ''' grouper('ABCDEFG', by=3, fillvalue='x') -> ABC DEF Gxx '''
+    args = [iter(iterable)] * by
+    return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 class SilentSet(set):
     '''
@@ -73,16 +80,31 @@ class Field(object):
     def value_at(self, row, col):
         cell = self.cell_at(row, col)
         return cell.value
-    
-    #TODO:
-    #def pprint(self): pretty print cells(or cells.val) as "square"
+
+    def pprint(self, out=sys.stdout):
+        '''
+        Pretty-print all the cells to OUT
+        '''
+        lines = (self.horizontal_line(line=i) for i in range(self.ROWS_MAX))
+        c = self.COLS_MAX
+        border = '%s\n' % ('=' * (c + c//3 - 1))
+        out.write(border)
+        for (n, line) in enumerate(lines):
+            if not (n % 3) and n:  # avoid n == 0
+                out.write('+'.join(['---']*3))
+                out.write('\n')
+
+            groups = list(grouper(line, by=3))
+            out.write('|'.join(('%s' * len(g)) % g for g in groups))
+            out.write('\n')
+        out.write(border)
 
     def _get_subset(self, rule):
         '''
         Tricky. This method returns list of cells matching
         2-argument predicate RULE.
         Arguments of RULE: row and column where cells is located at.
-        
+
         This method is supplementary for specific methods which select
         horizontal/vertical line and subsquares.
         '''
@@ -95,7 +117,7 @@ class Field(object):
         assert 0 <= line < self.ROWS_MAX, "line out of bound"
         rule = lambda x, _: x == line
         return self._get_subset(rule)
-    
+
     def vertical_line(self, cell=None, column=0):
         if cell:
             column = cell.col
@@ -105,7 +127,8 @@ class Field(object):
 
     def subsquare_for(self, cell=None, row=0, col=0):
         '''
-        Returns list of cells located in the same subsquare that is specified either by CELL or by ROW and COL explicilty.
+        Returns list of cells located in the same subsquare that is specified
+        either by CELL or by ROW and COL explicilty.
         CELL specification has higher priority
         '''
         if cell:
@@ -181,7 +204,7 @@ class Cell(object):
             self.options = cp.copy(self.DEFAULT_OPTIONS)
         else:
             raise UnknownSymbolError('Unexpected symbol: %s' % val)
-        
+
         self.row = row
         self.col = col
 
@@ -189,7 +212,7 @@ class Cell(object):
         return 'Cell(%s, row=%s, col=%s)' % (self.value, self.row, self.col)
 
     def __str__(self):
-        return repr(self)
+        return str(self.value) if self.value else '.'
 
     def __innerEq__(self, cell):
         '''
