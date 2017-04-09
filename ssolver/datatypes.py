@@ -20,6 +20,7 @@ def grouper(iterable, by=3, fillvalue=None):
     args = [iter(iterable)] * by
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
+#TODO: rename SilentSet -> Options
 class SilentSet(set):
     '''
     The purpose of this type is to provide a way of silent removal of elements.
@@ -33,6 +34,12 @@ class SilentSet(set):
         if value in self:
             super().remove(value)
 
+    def get_sole_option(self):
+        '''
+        Returns the only option. If there's 0 or more than 1 option, returns None
+        '''
+        if len(self) == 1:
+            return list(self)[0]
 
 class Field(object):
     '''
@@ -176,6 +183,9 @@ class Field(object):
                 self.vertical_line(cell=cell) + \
                 self.subsquare_for(cell=cell)
         return [x for x in _all if x is not cell]
+
+    def __eq__(self, other):
+        return self.rows == other.rows and self.cells == other.cells
 
 
 class Cell(object):
