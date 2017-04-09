@@ -13,6 +13,7 @@ import copy as cp
 import sys
 import itertools
 
+__all__ = ['Field', 'Cell', 'UnknownSymbolError', 'IncorrectInputError']
 
 def grouper(iterable, by=3, fillvalue=None):
     ''' grouper('ABCDEFG', by=3, fillvalue='x') -> ABC DEF Gxx '''
@@ -189,10 +190,9 @@ class Cell(object):
 
     def __init__(self, val, row, col):
 
-        if val.isnumeric():
+        if val.isnumeric() and 0 < int(val) < 10:
             self.value = int(val)
-            self.options = cp.copy(self.DEFAULT_OPTIONS)
-            self.options.remove(self.value)
+            self.options = SilentSet()
         elif val == 'e':  # 'e' for even
             self.value = 0
             self.options = cp.copy(self.EVEN)
