@@ -1,0 +1,18 @@
+# use glob syntax
+syntax: glob
+# trash
+__pycache__
+*.pyc
+
+# dev flow
+*.diff
+*.patch
+*.swp
+
+# backups
+*.bak
+*.old
+
+# logs
+*.log
+
