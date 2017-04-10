@@ -50,3 +50,11 @@ class SoluteTrivia(unittest.TestCase):
         solved = an.solve(self.field)
 
         self.assertEqual(golden, solved)
+
+    def testSolve(self):
+        field = ssolver.loader.load_field('input/simple.sudoku')
+        solved = an.solve(field)
+
+        golden = ssolver.loader.load_field('input/simple.solution')
+        self.assertEqual(golden, solved)
+        
